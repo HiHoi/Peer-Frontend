@@ -64,10 +64,11 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
 
     axiosWithAuth
       .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/team/setting/${team.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/team/setting/${teamInfo.id}`,
         formdata,
       )
       .then((res) => {
+        // 이미지 따로 받아서 적용
         if (res.status == 200) {
           console.log('서버에 저장 완료')
           setIsEdit(false)
@@ -147,14 +148,6 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
     })
     closeModal()
   }, [teamInfo.teamImage])
-
-  const handleMaxMember = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsEdit(true)
-    setTeamInfo({
-      ...teamInfo,
-      maxMember: event.target.value,
-    })
-  }
 
   const validation = (target: string) => {
     // 한글, 영문, 숫자만 입력 가능
@@ -319,29 +312,6 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
                 />
               </Stack>
             </Stack>
-            <Stack>
-              <Typography>팀원 모집 인원: </Typography>
-              <TextField
-                id="outlined-basic"
-                label={`팀원 모집 최대 인원`}
-                variant="outlined"
-                value={teamInfo.maxMember}
-                maxRows={1}
-                size="small"
-                onChange={handleMaxMember}
-                error={validationNumber(teamInfo.maxMember as string)}
-                helperText={
-                  validationNumber(teamInfo.maxMember as string)
-                    ? '다시 입력'
-                    : ''
-                }
-                inputProps={{
-                  style: {
-                    padding: 5,
-                  },
-                }}
-              />
-            </Stack>
           </Box>
           <Button onClick={openConfirmModel}>팀 설정</Button>
         </Box>
@@ -471,25 +441,6 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
                 />
               </Stack>
             </Stack>
-          </Box>
-          <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-            <Typography>팀 역할</Typography>
-            <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-              <Stack>
-                <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-                  <Typography>FE</Typography>
-                </Box>
-                <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-                  <Typography>BE</Typography>
-                </Box>
-                <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-                  <Typography>디자이너</Typography>
-                </Box>
-                <Box sx={{ border: '1px solid', borderRadius: 2, m: 1, p: 2 }}>
-                  <Typography>역할</Typography>
-                </Box>
-              </Stack>
-            </Box>
           </Box>
           <Button onClick={openConfirmModel}>팀 설정</Button>
         </Box>
