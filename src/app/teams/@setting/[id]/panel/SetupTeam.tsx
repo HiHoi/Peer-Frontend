@@ -43,6 +43,26 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
   const [isEdit, setIsEdit] = useState(false)
   const axiosWithAuth = useAxiosWithAuth()
 
+  const convertImageToBase64 = (file: any) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result.split(',')[1]) // Base64 데이터에서 실제 데이터 부분만 추출
+        } else {
+          reject(new Error('Unexpected result type'))
+        }
+      }
+
+      reader.onerror = (error) => {
+        reject(error)
+      }
+
+      reader.readAsDataURL(file)
+    })
+  }
+
   const sendTeamInfo = () => {
     if (
       validation(teamInfo.name) ||
@@ -50,22 +70,11 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
     )
       return alert('한글, 영문, 숫자만 입력 가능합니다.')
     if (isEdit === false) return alert('변경된 사항이 없습니다.')
-    const formdata = new FormData()
-    formdata.append('name', teamInfo.name)
-    formdata.append('dueTo', teamInfo.dueTo)
-    formdata.append('operationForm', teamInfo.operationForm)
-    formdata.append('region', teamInfo.region[1])
-    formdata.append('region', teamInfo.region[0])
-    formdata.append('teamImage', teamInfo.teamImage as string)
-    formdata.append('maxMember', teamInfo.maxMember as string)
-    formdata.append('type', teamInfo.type)
-    formdata.append('status', teamInfo.status)
-    formdata.append('id', teamInfo.id)
 
     axiosWithAuth
       .post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/team/setting/${teamInfo.id}`,
-        formdata,
+        teamInfo,
       )
       .then((res) => {
         // 이미지 따로 받아서 적용
@@ -127,12 +136,13 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
       console.log(file)
       if (e.target.files && e.target.files[0]) {
         setIsEdit(true)
+        const base64 = convertImageToBase64(file)
         const reader = new FileReader()
 
         reader.onload = () => {
           setTeamInfo({
             ...teamInfo,
-            teamImage: reader.result as string,
+            teamImage: base64 as unknown as string,
           })
         }
         reader.readAsDataURL(file!)
