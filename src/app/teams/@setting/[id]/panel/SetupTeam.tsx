@@ -131,18 +131,20 @@ const SetupTeam = ({ team }: { team: ISetupTeam }) => {
   }
 
   const handleImage = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    async (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files && e.target.files[0]
       console.log(file)
       if (e.target.files && e.target.files[0]) {
         setIsEdit(true)
-        const base64 = convertImageToBase64(file)
+        const base64 = await convertImageToBase64(file)
         const reader = new FileReader()
 
-        reader.onload = () => {
+        reader.onload = (e) => {
+          console.log('reader', reader.result)
+          console.log('base64', base64)
           setTeamInfo({
             ...teamInfo,
-            teamImage: base64 as unknown as string,
+            teamImage: e.target?.result as string,
           })
         }
         reader.readAsDataURL(file!)
