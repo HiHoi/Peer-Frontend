@@ -6,8 +6,8 @@ import { useState } from 'react'
 import SetupMember from './panel/SetupMember'
 import ApplicantList from './panel/ApplicantList'
 import useSWR from 'swr'
-import { useRouter } from 'next/navigation'
 import useAxiosWithAuth from '@/api/config'
+import ShowRecruit from './panel/ShowRecruit'
 
 export enum TeamType {
   PROJECT = 'PROJECT',
@@ -84,7 +84,6 @@ export interface IApplicant {
 }
 
 const TeamsSetupPage = ({ params }: { params: { id: string } }) => {
-  const router = useRouter()
   const axiosInstance = useAxiosWithAuth()
   const [showApplicant, setShowApplicant] = useState<boolean>(false)
   const { data, isLoading } = useSWR<ITeam>(
@@ -113,6 +112,7 @@ const TeamsSetupPage = ({ params }: { params: { id: string } }) => {
     >
       {data ? (
         <>
+          <ShowRecruit name={data.team.name} teamId={data.team.id} />
           <SetupPage team={data.team} />
           {!showApplicant ? (
             <>
@@ -136,18 +136,6 @@ const TeamsSetupPage = ({ params }: { params: { id: string } }) => {
           <Typography>데이터가 없습니다.</Typography>
         </>
       )}
-      <Button
-        variant="contained"
-        onClick={() => router.push(`/recruit/${params.id}`)}
-      >
-        모집 글 보기
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => router.push(`/recruit/edit/${params.id}`)}
-      >
-        모집 글 수정하기
-      </Button>
     </Stack>
   )
 }
