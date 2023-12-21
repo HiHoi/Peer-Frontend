@@ -1,10 +1,25 @@
 'use client'
 
-import { Badge, Drawer, Tab, Tabs } from '@mui/material'
-import { IconButton } from '@mui/material'
+import {
+  Badge,
+  Card,
+  Drawer,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
+import { IconButton, Button } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import { SyntheticEvent, useCallback, useState } from 'react'
 import { Box } from '@mui/system'
+
+enum AlertTab {
+  All = 0,
+  Message,
+  Team,
+  Notice,
+}
 
 const AlertIcon = () => {
   const [tabvalue, setTabValue] = useState(0)
@@ -58,6 +73,34 @@ const AlertIcon = () => {
             <Tab label="팀활동" />
             <Tab label="공지" />
           </Tabs>
+          <Stack position={'relative'}>
+            <Button
+              variant="text"
+              color="primary"
+              sx={{ width: '5rem', right: 0 }}
+            >
+              전체 삭제
+            </Button>
+          </Stack>
+          <Stack m={'1rem'}>
+            <Typography>오늘</Typography>
+            <Card
+              sx={{
+                height: '4rem',
+                borderRadius: '1rem',
+                direction: 'row',
+                alignItems: 'center',
+                display: 'flex',
+              }}
+            >
+              <Stack flex={1}>
+                <Typography> 쪽지의 타입 </Typography>
+              </Stack>
+              <Stack flex={4}>
+                <Typography> 쪽지의 내용 </Typography>
+              </Stack>
+            </Card>
+          </Stack>
         </Box>
       </Drawer>
     </>
