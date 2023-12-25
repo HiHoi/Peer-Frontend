@@ -21,7 +21,36 @@ enum AlertTab {
   Notice,
 }
 
+interface IAlert {
+  type: AlertTab
+  title: string
+  content: string
+  date: string
+}
+
+const mock: IAlert[] = [
+  {
+    type: AlertTab.Message,
+    title: '쪽지의 타입',
+    content: '쪽지의 내용',
+    date: '오늘',
+  },
+  {
+    type: AlertTab.Team,
+    title: '쪽지의 타입',
+    content: '쪽지의 내용',
+    date: '오늘',
+  },
+  {
+    type: AlertTab.Notice,
+    title: '쪽지의 타입',
+    content: '쪽지의 내용',
+    date: '오늘',
+  },
+]
+
 const AlertIcon = () => {
+  const [alertList, setAlertList] = useState<IAlert[]>(mock)
   const [tabvalue, setTabValue] = useState(0)
   const [isAlertComing, setIsAlertComing] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -48,6 +77,11 @@ const AlertIcon = () => {
 
   const handleChange = (e: SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
+  }
+
+  const deleteAlert = (e: SyntheticEvent) => {
+    const id = e.currentTarget.id
+    setAlertList(alertList.filter((alert) => alert.date !== id))
   }
 
   return (
@@ -96,8 +130,18 @@ const AlertIcon = () => {
               <Stack flex={1}>
                 <Typography> 쪽지의 타입 </Typography>
               </Stack>
-              <Stack flex={4}>
-                <Typography> 쪽지의 내용 </Typography>
+              <Stack
+                flex={4}
+                direction={'row'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
+                <Stack>
+                  <Typography> 쪽지의 내용 </Typography>
+                </Stack>
+                <Button variant="text" color="primary" onClick={deleteAlert}>
+                  X
+                </Button>
               </Stack>
             </Card>
           </Stack>
