@@ -1,11 +1,12 @@
 'use client'
 
 import { IMainCard } from '@/types/IPostDetail'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import HitchhikingCard from './HitchhikingCard'
-import { cardStyle } from './HitchhikingCard.style'
+import * as style from './HitchhikingCard.style'
+import useMedia from '@/hook/useMedia'
 
 enum ESwipeDirection {
   left = 'left',
@@ -16,18 +17,15 @@ enum ESwipeDirection {
 
 const CardContainer = ({
   cardList,
-  update,
-  setCardList,
+  removeCard,
   isProject,
 }: {
   cardList: Array<IMainCard>
-  update: () => void
-  setCardList: (
-    cardList: IMainCard[] | ((prev: IMainCard[]) => IMainCard[]),
-  ) => void
+  removeCard: (recruit_id: number) => void
   isProject: boolean
 }) => {
   const [dragged, setDragged] = useState(false)
+  const { isPc } = useMedia()
 
   console.log('cardList')
   console.log(cardList)
@@ -55,23 +53,52 @@ const CardContainer = ({
 
       return
     }
+    removeCard(recruit_id)
+    console.log(`dislike api 호출 pathValue: ${recruit_id}, title: ${title}`)
 
-    setCardList((prev: IMainCard[]) => {
-      console.log(`dislike api 호출 pathValue: ${recruit_id}, title: ${title}`)
-      return prev.filter((card) => card.recruit_id !== recruit_id)
-    })
-    if (cardList.length === 2) {
-      update()
-    }
     setDragged(false)
   }
 
   return (
     <>
-      <Box width={1} height={1} position={'relative'} sx={{ zIndex: 500 }}>
+      <Box
+        position={'relative'}
+        sx={isPc ? style.cardPcSize : style.cardMobileSize}
+      >
+        <motion.div
+          animate={{
+            opacity: cardList.length > 2 ? 1 : 0,
+            transform: cardList.length > 2 ? 'rotate(-2.5deg)' : 'rotate(0deg)',
+            position: 'absolute',
+          }}
+          transition={{ duration: 0.8 }}
+        >
+          <Box
+            sx={{
+              ...(isPc ? style.cardPcSize : style.cardMobileSize),
+              backgroundColor: 'text.assistive',
+            }}
+          />
+        </motion.div>
+        <motion.div
+          animate={{
+            opacity: cardList.length > 3 ? 1 : 0,
+            transform: cardList.length > 3 ? 'rotate(2.5deg)' : 'rotate(0deg)',
+            position: 'absolute',
+          }}
+          transition={{ duration: 0.8 }}
+        >
+          <Box
+            sx={{
+              ...(isPc ? style.cardPcSize : style.cardMobileSize),
+              backgroundColor: 'text.assistive',
+            }}
+          />
+        </motion.div>
         <AnimatePresence>
           {cardList.map((card, i) => {
-            if (cardList.length - i > 2) return null
+            console.log(`i : ${i}`)
+            if (cardList.length > 2 && cardList.length - i > 2) return null
             return (
               <motion.div
                 key={card.recruit_id}
@@ -83,9 +110,6 @@ const CardContainer = ({
                   scale: i === cardList.length - 1 ? 1 : 0.8,
                   opacity: i === cardList.length - 1 ? 1 : 0,
                 }}
-                style={{
-                  display: i === cardList.length - 1 ? 'block' : 'none',
-                }}
                 exit={{ opacity: 0 }}
                 drag
                 dragSnapToOrigin
@@ -96,12 +120,12 @@ const CardContainer = ({
                   right: 0,
                   bottom: 0,
                 }}
-                dragTransition={{ bounceStiffness: 300, bounceDamping: 15 }}
+                dragTransition={{ bounceStiffness: 300, bounceDamping: 50 }}
                 onDragStart={() => setDragged(true)}
                 onDragEnd={(e: any, info: any) =>
                   handleDragEnd(e, info, card.recruit_id, card.title)
                 }
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
               >
                 <HitchhikingCard
                   authorImage={card.user_thumbnail}
@@ -110,7 +134,7 @@ const CardContainer = ({
                   tagList={card.tagList}
                   image={card.image}
                   postId={card.recruit_id}
-                  sx={cardStyle}
+                  sx={isPc ? style.cardPcStyleBase : style.cardMobileStyleBase}
                   dragged={dragged}
                   setDragged={setDragged}
                   isProject={isProject}
@@ -120,8 +144,6 @@ const CardContainer = ({
           })}
         </AnimatePresence>
       </Box>
-
-      <Typography sx={{ zIndex: 0 }}>히치하이킹 끝!</Typography>
     </>
   )
 }
