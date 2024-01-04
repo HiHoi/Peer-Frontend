@@ -14,7 +14,7 @@ import { SyntheticEvent, useCallback, useState } from 'react'
 import { Box } from '@mui/system'
 import NotificationIcon from '@/icons/NotificationIcon'
 import useMedia from '@/hook/useMedia'
-import { red } from '@mui/material/colors'
+import { green, red, yellow } from '@mui/material/colors'
 
 enum AlertTabs {
   All = 0,
@@ -51,7 +51,12 @@ const mock: IAlert[] = [
   },
 ]
 
-const AlertCard = ({ alert }: { alert: IAlert }) => {
+interface IAlertCard {
+  alert: IAlert
+  deleteAlert: (e: SyntheticEvent) => void
+}
+
+const AlertCard = ({ alert, deleteAlert }: IAlertCard) => {
   return (
     <Stack
       height={'4rem'}
@@ -61,15 +66,39 @@ const AlertCard = ({ alert }: { alert: IAlert }) => {
       display={'flex'}
     >
       <Stack flex={1}>
-        <Avatar
-          sx={{
-            width: '3rem',
-            height: '3rem',
-            bgcolor: red[500] + '40',
-          }}
-        >
-          <Typography color={red[500]}>팀</Typography>
-        </Avatar>
+        {alert.type === AlertTabs.Notice && (
+          <Avatar
+            sx={{
+              width: '3rem',
+              height: '3rem',
+              bgcolor: yellow[500] + '40',
+            }}
+          >
+            <Typography color={yellow[500]}>공지</Typography>
+          </Avatar>
+        )}
+        {alert.type === AlertTabs.Message && (
+          <Avatar
+            sx={{
+              width: '3rem',
+              height: '3rem',
+              bgcolor: green[500] + '40',
+            }}
+          >
+            <Typography color={green[500]}>메세지</Typography>
+          </Avatar>
+        )}
+        {alert.type === AlertTabs.Team && (
+          <Avatar
+            sx={{
+              width: '3rem',
+              height: '3rem',
+              bgcolor: red[500] + '40',
+            }}
+          >
+            <Typography color={red[500]}>팀</Typography>
+          </Avatar>
+        )}
       </Stack>
       <Stack
         flex={4}
@@ -171,38 +200,11 @@ const AlertTab = () => {
             <Stack my={'1rem'}>
               <Typography>오늘</Typography>
             </Stack>
-            <Stack
-              height={'4rem'}
-              borderRadius={'1rem'}
-              direction={'row'}
-              alignItems={'center'}
-              display={'flex'}
-            >
-              <Stack flex={1}>
-                <Avatar
-                  sx={{
-                    width: '3rem',
-                    height: '3rem',
-                    bgcolor: red[500] + '40',
-                  }}
-                >
-                  <Typography color={red[500]}>팀</Typography>
-                </Avatar>
+            {alertList.map((alert, index) => (
+              <Stack key={index} my={'1rem'}>
+                <AlertCard alert={alert} deleteAlert={deleteAlert} />
               </Stack>
-              <Stack
-                flex={4}
-                direction={'row'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
-                <Stack textOverflow={'ellipsis'}>
-                  <Typography>쪽지의 내용</Typography>
-                </Stack>
-                <Button variant="text" color="primary" onClick={deleteAlert}>
-                  X
-                </Button>
-              </Stack>
-            </Stack>
+            ))}
           </Stack>
         </Box>
       </Drawer>
