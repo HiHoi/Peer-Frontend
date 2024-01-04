@@ -2,7 +2,7 @@
 
 import { AppBar, Box, Stack, Toolbar, alpha, useTheme } from '@mui/material'
 import SearchButton from '../main-page/SearchButton'
-import AlertIcon from './AlertIcon'
+import AlertIcon from './AlertTab'
 import PeerLogo from '@/app/panel/layout-panel/PeerLogo'
 import * as style from './Header.style'
 

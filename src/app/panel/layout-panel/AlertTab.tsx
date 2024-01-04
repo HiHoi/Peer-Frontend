@@ -1,8 +1,8 @@
 'use client'
 
 import {
+  Avatar,
   Badge,
-  Card,
   Drawer,
   Stack,
   Tab,
@@ -14,8 +14,9 @@ import { SyntheticEvent, useCallback, useState } from 'react'
 import { Box } from '@mui/system'
 import NotificationIcon from '@/icons/NotificationIcon'
 import useMedia from '@/hook/useMedia'
+import { red } from '@mui/material/colors'
 
-enum AlertTab {
+enum AlertTabs {
   All = 0,
   Message,
   Team,
@@ -23,7 +24,7 @@ enum AlertTab {
 }
 
 interface IAlert {
-  type: AlertTab
+  type: AlertTabs
   title: string
   content: string
   date: string
@@ -31,26 +32,63 @@ interface IAlert {
 
 const mock: IAlert[] = [
   {
-    type: AlertTab.Message,
+    type: AlertTabs.Message,
     title: '쪽지의 타입',
     content: '쪽지의 내용',
     date: '오늘',
   },
   {
-    type: AlertTab.Team,
+    type: AlertTabs.Team,
     title: '쪽지의 타입',
     content: '쪽지의 내용',
     date: '오늘',
   },
   {
-    type: AlertTab.Notice,
+    type: AlertTabs.Notice,
     title: '쪽지의 타입',
     content: '쪽지의 내용',
     date: '오늘',
   },
 ]
 
-const AlertIcon = () => {
+const AlertCard = ({ alert }: { alert: IAlert }) => {
+  return (
+    <Stack
+      height={'4rem'}
+      borderRadius={'1rem'}
+      direction={'row'}
+      alignItems={'center'}
+      display={'flex'}
+    >
+      <Stack flex={1}>
+        <Avatar
+          sx={{
+            width: '3rem',
+            height: '3rem',
+            bgcolor: red[500] + '40',
+          }}
+        >
+          <Typography color={red[500]}>팀</Typography>
+        </Avatar>
+      </Stack>
+      <Stack
+        flex={4}
+        direction={'row'}
+        alignItems={'center'}
+        justifyContent={'space-between'}
+      >
+        <Stack textOverflow={'ellipsis'}>
+          <Typography>쪽지의 내용</Typography>
+        </Stack>
+        <Button variant="text" color="primary" onClick={deleteAlert}>
+          X
+        </Button>
+      </Stack>
+    </Stack>
+  )
+}
+
+const AlertTab = () => {
   const [alertList, setAlertList] = useState<IAlert[]>(mock)
   const [tabvalue, setTabValue] = useState(0)
   const [isAlertComing, setIsAlertComing] = useState(false)
@@ -109,35 +147,47 @@ const AlertIcon = () => {
           keepMounted: true, // Better open performance on mobile.
         }}
       >
-        <Box sx={{ width: 400, mt: 7 }} role="presentation">
-          <Tabs value={tabvalue} onChange={handleChange}>
+        <Box sx={{ width: 400, mt: 7, p: '2rem' }} role="presentation">
+          <Typography fontWeight={'bold'}>알림</Typography>
+          <Tabs variant="fullWidth" value={tabvalue} onChange={handleChange}>
             <Tab label="전체" />
             <Tab label="쪽지" />
-            <Tab label="팀활동" />
-            <Tab label="공지" />
+            <Tab label="키워드" />
           </Tabs>
           <Stack position={'relative'}>
             <Button
               variant="text"
-              color="primary"
-              sx={{ width: '5rem', right: 0 }}
+              color="secondary"
+              sx={{
+                width: '5rem',
+                right: 0,
+                margin: '0.5rem',
+              }}
             >
               전체 삭제
             </Button>
           </Stack>
-          <Stack m={'1rem'}>
-            <Typography>오늘</Typography>
-            <Card
-              sx={{
-                height: '4rem',
-                borderRadius: '1rem',
-                direction: 'row',
-                alignItems: 'center',
-                display: 'flex',
-              }}
+          <Stack m={'0.5rem'}>
+            <Stack my={'1rem'}>
+              <Typography>오늘</Typography>
+            </Stack>
+            <Stack
+              height={'4rem'}
+              borderRadius={'1rem'}
+              direction={'row'}
+              alignItems={'center'}
+              display={'flex'}
             >
               <Stack flex={1}>
-                <Typography> 쪽지의 타입 </Typography>
+                <Avatar
+                  sx={{
+                    width: '3rem',
+                    height: '3rem',
+                    bgcolor: red[500] + '40',
+                  }}
+                >
+                  <Typography color={red[500]}>팀</Typography>
+                </Avatar>
               </Stack>
               <Stack
                 flex={4}
@@ -145,14 +195,14 @@ const AlertIcon = () => {
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
-                <Stack>
-                  <Typography> 쪽지의 내용 </Typography>
+                <Stack textOverflow={'ellipsis'}>
+                  <Typography>쪽지의 내용</Typography>
                 </Stack>
                 <Button variant="text" color="primary" onClick={deleteAlert}>
                   X
                 </Button>
               </Stack>
-            </Card>
+            </Stack>
           </Stack>
         </Box>
       </Drawer>
@@ -160,4 +210,4 @@ const AlertIcon = () => {
   )
 }
 
-export default AlertIcon
+export default AlertTab
