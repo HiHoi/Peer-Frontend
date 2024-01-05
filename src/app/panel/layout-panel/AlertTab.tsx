@@ -197,14 +197,37 @@ const AlertTab = () => {
             </Button>
           </Stack>
           <Stack m={'0.5rem'}>
-            <Stack my={'1rem'}>
-              <Typography>오늘</Typography>
-            </Stack>
-            {alertList.map((alert, index) => (
-              <Stack key={index} my={'1rem'}>
-                <AlertCard alert={alert} deleteAlert={deleteAlert} />
-              </Stack>
-            ))}
+            {tabvalue === AlertTabs.All && (
+              alertList.map((alert, index) => (
+                <Stack key={index} my={'1rem'}>
+                  <AlertCard alert={alert} deleteAlert={deleteAlert} />
+                </Stack>
+              ))
+            )}
+            {tabvalue === AlertTabs.Message &&
+              alertList
+                .filter((alert) => alert.type === AlertTabs.Message)
+                .map((alert, index) => (
+                  <Stack key={index} my={'1rem'}>
+                    <AlertCard alert={alert} deleteAlert={deleteAlert} />
+                  </Stack>
+                ))}
+            {tabvalue === AlertTabs.Team &&
+              alertList
+                .filter((alert) => alert.type === AlertTabs.Team)
+                .map((alert, index) => (
+                  <Stack key={index} my={'1rem'}>
+                    <AlertCard alert={alert} deleteAlert={deleteAlert} />
+                  </Stack>
+                ))}
+            {tabvalue === AlertTabs.Notice &&
+              alertList
+                .filter((alert) => alert.type === AlertTabs.Notice)
+                .map((alert, index) => (
+                  <Stack key={index} my={'1rem'}>
+                    <AlertCard alert={alert} deleteAlert={deleteAlert} />
+                  </Stack>
+                ))}
           </Stack>
         </Box>
       </Drawer>
