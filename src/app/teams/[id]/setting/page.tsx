@@ -34,6 +34,12 @@ const TeamsSetupPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (!socket) return
+    socket.on('whoAmI', (data: any) => {
+      console.log('whoAmI receive')
+      console.log('whoam', 'on', data)
+      setMyInfo(data)
+    })
+
     socket.emit(
       'whoAmI',
       {

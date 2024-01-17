@@ -76,7 +76,7 @@ const SetupMember = ({ team, teamId, jobs, myInfo }: ISetupMember) => {
   useEffect(() => {
     setJob(jobs)
     console.log(job)
-    console.log(myInfo)
+    console.log('myinfo', myInfo)
     console.log(member?.id)
     // if (selectedJobs.length > 0) {
     //   changeJob()
